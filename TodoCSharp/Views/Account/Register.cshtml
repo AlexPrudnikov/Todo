@@ -1,0 +1,47 @@
+﻿@model TodoCSharp.ViewModels.RegisterViewModel
+
+<h2>Register</h2>
+<form method="post" asp-controller="Account" asp-action="Register">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label class="labelTask" asp-for="UserName" ></label> <br />
+        <input class="inputReplace" asp-for="UserName" />
+        <span asp-validation-for="UserName"></span>
+    </div>
+
+    <div>
+        <label class="labelTask" asp-for="Age"></label> <br />
+        <input class="inputReplace" asp-for="Age" />
+        <span asp-validation-for="Age"></span>
+    </div>
+
+    <div>
+        <label class="labelTask" asp-for="Email"></label><br />
+        <input class="inputReplace" asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label class="labelTask" asp-for="Password"></label> <br />
+        <input class="inputReplace" asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+
+    <div>
+        <label class="labelTask" asp-for="PasswordConfirm"></label> <br />
+        <input class="inputReplace" asp-for="PasswordConfirm" />
+        <span asp-validation-for="PasswordConfirm"></span>
+    </div>
+
+    <div>
+        <label class="labelTask" asp-for="Captcha"></label> <br />
+        <input class="inputReplace" asp-for="Captcha" />
+        <span asp-validation-for="Captcha"></span>
+    </div>
+
+    <div>
+        <input type="submit" value="Регистрация" />
+    </div>
+</form>
+

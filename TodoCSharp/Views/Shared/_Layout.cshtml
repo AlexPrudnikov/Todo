@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="css/style.css"  rel="stylesheet" /> 
+</head>
+<body>
+    <div style="background-color: yellow; height: 70px;">
+        <center style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 300%">Todo</center>
+    </div>
+    <div>
+        @RenderBody()
+    </div>
+    <environment include="Development">
+        <script src="~/js/xmlHttpRequest.js"></script>
+        <script src="~/js/todo.js"></script>
+        <script src="~/js/sortTodos.js"></script>
+        <script src="~/js/addEvent.js"></script>
+    </environment>
+</body>
+</html>

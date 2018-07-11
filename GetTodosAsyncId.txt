@@ -1,0 +1,5 @@
+  //todos = (await db.Users.Include(todo => todo.Todos)
+                //        .ToListAsync())
+                //        .Where(user => user.Id == id)
+                //        .FirstOrDefault()
+                //        .Todos.ToList();

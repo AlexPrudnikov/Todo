@@ -1,0 +1,18 @@
+.labelTask
+{
+    display: inline-block;
+    width: 350px;
+}
+
+.inputReplace
+{
+    display: inline-block;
+    width: 350px;
+}
+
+div
+{
+    margin: 0 auto;
+    width: 700px;
+}
+
