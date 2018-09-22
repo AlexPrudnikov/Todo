@@ -4,9 +4,11 @@
 <form method="post" asp-controller="Account" asp-action="Register">
     <div asp-validation-summary="ModelOnly"></div>
 
-    <div>
-        <label class="labelTask" asp-for="UserName" ></label> <br />
-        <input class="inputReplace" asp-for="UserName" />
+    <div class="form-group">
+        @*<label class="labelTask" asp-for="UserName" ></label> <br />
+            <input class="inputReplace" asp-for="UserName" />*@
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" type="text" class="form-control" />
         <span asp-validation-for="UserName"></span>
     </div>
 
@@ -41,7 +43,10 @@
     </div>
 
     <div>
-        <input type="submit" value="Регистрация" />
+        <button type="submit" class="btn btn-primary">Регистрация</button>
     </div>
 </form>
+
+@*Добавить bootstrap
+https://www.w3schools.com/bootstrap4/tryit.asp?filename=trybs_form_input&stacked=h*@
 

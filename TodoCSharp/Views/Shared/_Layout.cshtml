@@ -1,7 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <link href="css/style.css"  rel="stylesheet" /> 
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
 </head>
 <body>
     <div style="background-color: yellow; height: 70px;">
@@ -10,11 +12,5 @@
     <div>
         @RenderBody()
     </div>
-    <environment include="Development">
-        <script src="~/js/xmlHttpRequest.js"></script>
-        <script src="~/js/todo.js"></script>
-        <script src="~/js/sortTodos.js"></script>
-        <script src="~/js/addEvent.js"></script>
-    </environment>
 </body>
 </html>

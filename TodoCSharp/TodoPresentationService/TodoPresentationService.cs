@@ -18,11 +18,6 @@ namespace TodoCSharp.TodoPresentationService
             this.todoStyleDao = todoStyleDao;
         }
 
-        /// <summary>
-        /// Получить все задачи
-        /// </summary>
-        /// <param name="sortOrder"></param>
-        /// <returns></returns>
         public async Task<IEnumerable<Todo>> GetTodos(String id, SortState sortOrder = SortState.NameAsc)
         {
             // Если нужно будет подтянуть данные из другой таблицы, используем метод 'Include(x => x.Из-другой-таблицы)'
@@ -43,31 +38,21 @@ namespace TodoCSharp.TodoPresentationService
             return todos;
         }
 
-        /// <summary>
-        /// Добавление задачи
-        /// </summary>
-        /// <param name="todo"></param>
-        /// <returns></returns>
         public async Task Create(String id, Todo todo)
         {
             await todoDao.CreateAsync(id, todo);
         }
 
-        /// <summary>
-        /// Удаление задачи
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public async Task Remove(Int32? id)
         {
             await todoDao.RemoveAsync(id);
         }
 
-        /// <summary>
-        /// Редактировать задачу
-        /// </summary>
-        /// <param name="todo"></param>
-        /// <returns></returns>
+        public async Task RemoveAll(String id)
+        {
+            await todoDao.RemoveAllAsync(id);
+        }
+
         public async Task Edit(Todo todo)
         {
             await todoDao.EditAsync(todo);

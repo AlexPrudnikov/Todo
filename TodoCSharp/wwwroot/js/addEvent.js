@@ -5,13 +5,14 @@
         this.accomlished;
     }
 
+    // Мжно запиисать так: 
     Task.prototype = {
-        handleRemoveTodo: handleRemoveTodo,
-        handleReplaceTodo: handleReplaceTodo,
-        handleCloseReplaceInput: handleCloseReplaceInput,
-        handleReplaceCheckboxTodo: handleReplaceCheckboxTodo
+        handleRemoveTodo,
+        handleReplaceTodo,
+        handleCloseReplaceInput,
+        handleReplaceCheckboxTodo
     };
-
+    
     let todos = document.getElementById('elements');
     for (let todo = todos.firstChild; todo !== null; todo = todo.nextSibling) {
         if (testNodeType(todo)) continue;

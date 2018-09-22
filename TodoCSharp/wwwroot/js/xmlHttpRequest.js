@@ -2,7 +2,7 @@
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.open('POST', url);
-        //xhr.timeout = 11000;
+
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
             if (xhr.status === 200 && xhr.readyState === 4) {

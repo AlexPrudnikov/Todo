@@ -12,13 +12,13 @@ function Task(name, accomlished = false, ini = true) {
 }
 
 Task.prototype = {
-    init: init,
-    createElement: createElement,
+    init,
+    createElement,
 
-    handleReplaceTodo: handleReplaceTodo,
-    handleCloseReplaceInput: handleCloseReplaceInput,
-    handleRemoveTodo: handleRemoveTodo,
-    handleReplaceCheckboxTodo: handleReplaceCheckboxTodo,
+    handleReplaceTodo,
+    handleCloseReplaceInput,
+    handleRemoveTodo,
+    handleReplaceCheckboxTodo
 };
 
 function init() {
@@ -57,7 +57,7 @@ function handleReplaceTodo(event) {
     }
 }
 
-// Закрыывает предыдущий input
+// Закрывает предыдущий input
 function handleCloseReplaceInput(event) {
     event.preventDefault();
 
@@ -120,6 +120,7 @@ function handleRemoveTodo() {
 
 }
 
+// Создание элемента
 function createElement(values) {
     let element = document.createElement(values.tag);
     element.innerHTML = values.name;
@@ -129,20 +130,18 @@ function createElement(values) {
         element.setAttribute(attribute, values.attributes[attribute]);
     }
 
-    // Есть ли событие на подписку
+    // События
     if(values.events) {
         for(let e in values.events) {
-            //element.addEventListener('click', values.events[e].bind(this));
-            // this.elem = values.events[e];
-            // element.addEventListener('click', this.elem);
             element.addEventListener('click', values.events[e]);
-            element.removeEventListener('click', values.events[e]);
+            element.removeEventListener('click', values.events[e]); // ??? нужно ли удалять событие
         }
     }
 
     return element;
 }
 
+// Добавление задачи
 function addTodo(event) {
     event.preventDefault();
 
@@ -150,14 +149,13 @@ function addTodo(event) {
     let name = input.value;
     input.value = '';
 
-    let newTask = new Task(name);
-
     // Сохраняем данные на сервере
-    create('Home/Create', newTask) // new Name(name); ???
+    create('Home/Create', new Task(name))
         .then(() => console.log('Задача успешно создана'))
         .catch(error => console.error(`Error: addTodo ${error}`));
 }
 
+// Изменение задачи
 function replace(elements) {
     let element = elements.todo.querySelector(elements.class);
     let newElement = document.createElement(elements.type);
@@ -175,6 +173,7 @@ function replace(elements) {
         this.name = element.value;
     }
 
+    // Заменяем элемент
     element.replaceWith(newElement);
 }
 

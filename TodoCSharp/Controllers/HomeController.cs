@@ -29,8 +29,13 @@ namespace TodoCSharp.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(SortState sortOrder = SortState.NameAsc)
         {
-            ViewData["NameSort"] = sortOrder == SortState.NameAsc ? SortState.NameDesc : SortState.NameAsc;
-            ViewData["AccomlishedSort"] = sortOrder == SortState.AccomlishedAsc ? SortState.AccomlishedDesc : SortState.AccomlishedAsc;
+            ViewData["NameSort"] = (sortOrder == SortState.NameAsc)
+                ? SortState.NameDesc
+                : SortState.NameAsc;
+
+            ViewData["AccomlishedSort"] = (sortOrder == SortState.AccomlishedAsc)
+                ? SortState.AccomlishedDesc
+                : SortState.AccomlishedAsc;
 
             String currentUser = User.GetUserId();
             return View(await todoService.GetTodos(currentUser, sortOrder));
@@ -53,16 +58,19 @@ namespace TodoCSharp.Controllers
             ModelFoJs temp = null;
             String currentUser = User.GetUserId();
 
-            if (currentUser != null)
+            temp = new ModelFoJs
             {
-                temp = new ModelFoJs
-                {
-                    NameSort = sortOrder == SortState.NameAsc ? nameof(SortState.NameDesc) : nameof(SortState.NameAsc),
-                    AccomlishedSort = sortOrder == SortState.AccomlishedAsc ? nameof(SortState.AccomlishedDesc) : nameof(SortState.AccomlishedAsc),
-                    Todos = await todoService.GetTodos(currentUser, sortOrder)
-                };
-            }
-            
+                NameSort = (sortOrder == SortState.NameAsc)
+                ? nameof(SortState.NameDesc)
+                : nameof(SortState.NameAsc),
+
+                AccomlishedSort = (sortOrder == SortState.AccomlishedAsc)
+                ? nameof(SortState.AccomlishedDesc)
+                : nameof(SortState.AccomlishedAsc),
+
+                Todos = await todoService.GetTodos(currentUser, sortOrder)
+            };
+
             return Json(temp);
         }
 

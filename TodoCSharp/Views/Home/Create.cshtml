@@ -1,36 +1,37 @@
 ﻿@model IEnumerable<TodoCSharp.Models.Todo>
 @{
+    Layout = null;
     ViewData["Title"] = "Create";
 }
 <div id="main">
     <a class="labelTask" asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.NameSort">Имя</a>
     <a asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.AccomlishedSort">Выполнена</a>
-
+    <div>
+        <p>@User.Identity.Name</p>
+    </div>
     <div id="elements">
         @foreach (var t in Model)
         {
             <div id="@t.TodoId">
                 <label class="labelTask">@t.Name</label>
                 <label>Выполнена</label>
-                @if (t.Accomlished)
-                {
-                    <input type="checkbox" checked ="checked" />
-                }
-                else
-                { 
-                    <input type="checkbox" />
-                }
-
+                <input type="checkbox" @(t.Accomlished == true ? "checked=\"checked\"" : "")/>
                 <button type="submit">Изменить задачу</button>
                 <button type="submit">Удалить задачу</button>
             </div>
         }
     </div>
-    <br /> 
+    <br />
 
 </div>
 <form method="post" asp-controller="Home" asp-action="Create" asp-antiforgery="true">
     <input id="mainInput" class="inputReplace" type="text" />
     <button id="create" type="submit">Создать задачу</button>
 </form>
+
+<link rel="stylesheet" asp-href-include="~/css/style.css" />
+<script asp-src-include="~/js/xmlHttpRequest.js"></script>
+<script asp-src-include="~/js/todo.js"></script>
+<script asp-src-include="~/js/sortTodos.js"></script>
+<script asp-src-include="~/js/addEvent.js"></script>
 

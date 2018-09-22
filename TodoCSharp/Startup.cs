@@ -23,7 +23,7 @@ namespace TodoCSharp
         public IConfiguration Configuration { get; }
         public Startup(IConfiguration confugaration)
         {
-            this.Configuration = confugaration;
+            Configuration = confugaration;
         }
 
 
@@ -36,7 +36,8 @@ namespace TodoCSharp
 
             // Добавляем контекст Mobilecontext в качестве сервиса в приложение
             // Добавление контекста данных в виде сервиса позволит затем получать его в конструкторе контроллера через механизм внедрения зависимостей.
-            services.AddDbContext<TodoContext>(options => options.UseSqlServer(connection));
+            services.AddDbContextPool<TodoContext>(options => options.UseSqlServer(connection));
+            //services.AddDbContext<TodoContext>(options => options.UseSqlServer(connection), optionsLifetime: ServiceLifetime.Transient);
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TodoContext>();
 
             // DependencyInjection
