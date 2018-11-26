@@ -6,35 +6,37 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoCSharp.Models;
 using TodoCSharp.TodoPresentationService;
+using TodoCSharp.UserAccountPresentationService;
 
 namespace TodoCSharp.Controllers
 {
     public class AdminController : Controller
-    {
-        private readonly UserManager<ApplicationUser> userManager;
+    {   
         private readonly ITodoPresentationService todoPresintationService;
-        public AdminController(UserManager<ApplicationUser> userManager, ITodoPresentationService todoPresintationService)
+        private readonly IUserAccountPresentationService userAccountPresentationService;
+        public AdminController(IUserAccountPresentationService userAccountPresentationService, ITodoPresentationService todoPresintationService)
         {
-            this.userManager = userManager;
             this.todoPresintationService = todoPresintationService;
+            this.userAccountPresentationService = userAccountPresentationService;
         }
 
         public IActionResult Index()
         {
-            return View(userManager.Users);
+            return View(userAccountPresentationService.Users);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(String id)
         {
-            ApplicationUser user = await userManager.FindByIdAsync(id);
+            ApplicationUser user = await userAccountPresentationService.FindById(id);
             if (user != null)
             {
                 // Remove all todos user
                 todoPresintationService.RemoveAll(id).Wait();
 
-                IdentityResult deleteUser = await userManager.DeleteAsync(user);
-                
+                // Delete user
+                IdentityResult deleteUser = await userAccountPresentationService.Delete(user);     
+
                 if (deleteUser.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -49,7 +51,7 @@ namespace TodoCSharp.Controllers
                 ModelState.AddModelError("", "User Not Found");
             }
 
-            return View("Index", userManager.Users);
+            return View("Index", userAccountPresentationService.Users);
         }
 
         private void AddErrorsFromResult(IdentityResult result)

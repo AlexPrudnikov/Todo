@@ -1,21 +1,55 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoCSharp.Models;
+using TodoCSharp.UserRoleDao;
 
 namespace TodoCSharp.UserRolePresentationService
 {
-    public class UserRolePresentationService : IUserPresentationService
+    public class UserRolePresentationService : IUserRolePresentationService
     {
-        public Task AddToRole(RoleModificationModel model)
+        private readonly IUserRoleDao userRoleDao;
+        public UserRolePresentationService(IUserRoleDao userRoleDao)
         {
-            throw new NotImplementedException();
+            this.userRoleDao = userRoleDao;
         }
 
-        public Task RemoveFromRole(RoleModificationModel model)
+        public async Task AddToRole(RoleModificationModel model, Action<IdentityResult> errors)
         {
-            throw new NotImplementedException();
+            IdentityResult result;
+            foreach (var userId in model.IdsToAdd ?? new String[] { })
+            {
+                ApplicationUser user = await userRoleDao.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    result = await userRoleDao.AddToRoleAsync(user, model.RoleName);
+                    if (!result.Succeeded)
+                    {
+                        // Add errors
+                        errors(result);
+                    }
+                }
+            }
+        }
+
+        public async Task RemoveFromRole(RoleModificationModel model, Action<IdentityResult> errors)
+        {
+            IdentityResult result;
+            foreach (var userId in model.IdsToDelete ?? new String[] { })
+            {
+                ApplicationUser user = await userRoleDao.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    result = await userRoleDao.RemoveFromRoleAsync(user, model.RoleName);
+                    if (!result.Succeeded)
+                    {
+                        // Add errors
+                        errors(result);
+                    }
+                }
+            }
         }
     }
 }

@@ -11,10 +11,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TodoCSharp.ErrorDao;
 using TodoCSharp.Models;
+using TodoCSharp.RoleDao;
+using TodoCSharp.RolePresentationService;
 using TodoCSharp.TodoDao;
 using TodoCSharp.TodoErrorPresentationService;
 using TodoCSharp.TodoPresentationService;
 using TodoCSharp.TodoStyleDao;
+using TodoCSharp.UserAccountDao;
+using TodoCSharp.UserAccountPresentationService;
+using TodoCSharp.UserRoleDao;
+using TodoCSharp.UserRolePresentationService;
 
 namespace TodoCSharp
 {
@@ -37,15 +43,21 @@ namespace TodoCSharp
             // Добавляем контекст Mobilecontext в качестве сервиса в приложение
             // Добавление контекста данных в виде сервиса позволит затем получать его в конструкторе контроллера через механизм внедрения зависимостей.
             services.AddDbContextPool<TodoContext>(options => options.UseSqlServer(connection));
-            //services.AddDbContext<TodoContext>(options => options.UseSqlServer(connection), optionsLifetime: ServiceLifetime.Transient);
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TodoContext>();
 
             // DependencyInjection
             services.AddTransient<ITodoDao, TodoDao.TodoDao>();
-            services.AddTransient<ITodoStyleDao, TodoStyleDao.TodoStyleDao>();
-            services.AddTransient<ITodoErrorDao, TodoErrorDao.TodoErrorDao>();
             services.AddTransient<ITodoPresentationService, TodoPresentationService.TodoPresentationService>();
-            services.AddTransient<ITodoErrorPresentationService, TodoErrorPresentationService.TodoErrorPresentationService>(); 
+            services.AddTransient<ITodoErrorDao, TodoErrorDao.TodoErrorDao>();
+            services.AddTransient<ITodoErrorPresentationService, TodoErrorPresentationService.TodoErrorPresentationService>();
+            services.AddTransient<IRoleDao, RoleDao.RoleDao>();
+            services.AddTransient<IRolePresentationService, RolePresentationService.RolePresentationService>();
+            services.AddTransient<IUserAccountDao, UserAccountDao.UserAccountDao>();
+            services.AddTransient<IUserAccountPresentationService, UserAccountPresentationService.UserAccountPresentationService>();
+            services.AddTransient<IUserRoleDao, UserRoleDao.UserRoleDao>();
+            services.AddTransient<IUserRolePresentationService, UserRolePresentationService.UserRolePresentationService>();
+            services.AddTransient<ITodoStyleDao, TodoStyleDao.TodoStyleDao>();
+            
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

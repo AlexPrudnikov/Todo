@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TodoCSharp.Models.Todo>
+﻿@model IEnumerable<TodoCSharp.ViewModels.TodoViewModel>
 @{
     Layout = null;
     ViewData["Title"] = "Create";
@@ -12,7 +12,7 @@
     <div id="elements">
         @foreach (var t in Model)
         {
-            <div id="@t.TodoId">
+            <div id="@t.Id">
                 <label class="labelTask">@t.Name</label>
                 <label>Выполнена</label>
                 <input type="checkbox" @(t.Accomlished == true ? "checked=\"checked\"" : "")/>

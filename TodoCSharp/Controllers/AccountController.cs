@@ -5,24 +5,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoCSharp.Models;
+using TodoCSharp.UserAccountPresentationService;
 using TodoCSharp.ViewModels;
 
 namespace TodoCSharp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly IUserValidator<ApplicationUser> userValidator;
-        private readonly IPasswordHasher<ApplicationUser> passwordHasher;
-        private readonly IPasswordValidator<ApplicationUser> passwordValidator;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserValidator<ApplicationUser> userValidator, IPasswordHasher<ApplicationUser> passwordHasher, IPasswordValidator<ApplicationUser> passwordValidator)
+        private readonly IUserAccountPresentationService userAccountPresentationService;
+        public AccountController(IUserAccountPresentationService userAccountPresentationService)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.userValidator = userValidator;
-            this.passwordHasher = passwordHasher;
-            this.passwordValidator = passwordValidator;
+            this.userAccountPresentationService = userAccountPresentationService;
         }
 
         [HttpGet]
@@ -39,11 +32,11 @@ namespace TodoCSharp.Controllers
                 ApplicationUser user = new ApplicationUser() { UserName = model.UserName, Age = model.Age, Email = model.Email };
 
                 // Добавление пользователя
-                var result = await userManager.CreateAsync(user, model.Password);
+                IdentityResult result = await userAccountPresentationService.Create(user, model.Password);
                 if (result.Succeeded)
                 {
                     // Устанавливаем куки
-                    await signInManager.SignInAsync(user, false);
+                    await userAccountPresentationService.SignIn(user, false);
                     return RedirectToAction("Create", "Home");
                 }
                 else
@@ -61,7 +54,7 @@ namespace TodoCSharp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(String id)
         {
-            ApplicationUser user = await userManager.FindByIdAsync(id);
+            ApplicationUser user = await userAccountPresentationService.FindById(id);
             if (user != null)
             {
                 return View(user);
@@ -75,11 +68,11 @@ namespace TodoCSharp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(String id, String email, String password)
         {
-            ApplicationUser user = await userManager.FindByIdAsync(id);
+            ApplicationUser user = await userAccountPresentationService.FindById(id);
             if (user != null)
             {
                 user.Email = email;
-                IdentityResult validEmail = await userValidator.ValidateAsync(userManager, user);
+                IdentityResult validEmail = await userAccountPresentationService.ValidateUser(user);
                 if (!validEmail.Succeeded)
                 {
                     AddErrorsFromResult(validEmail);
@@ -88,10 +81,11 @@ namespace TodoCSharp.Controllers
                 IdentityResult validPass = null;
                 if (!String.IsNullOrEmpty(password))
                 {
-                    validPass = await passwordValidator.ValidateAsync(userManager, user, password);
+                    validPass = await userAccountPresentationService.ValidatePassword(user, password);
                     if (validPass.Succeeded)
                     {
-                        user.PasswordHash = passwordHasher.HashPassword(user, password);
+                        // Получаем hash пароля
+                        user.PasswordHash = userAccountPresentationService.HashPassword(user, password);
                     }
                     else
                     {
@@ -99,9 +93,10 @@ namespace TodoCSharp.Controllers
                     }
                 }
 
-                if ((validEmail.Succeeded && validPass == null) || (validEmail.Succeeded && password != String.Empty && validPass.Succeeded))
+                if ((validEmail.Succeeded && validPass == null) || 
+                    (validEmail.Succeeded && password != String.Empty && validPass.Succeeded))
                 {
-                    IdentityResult result = await userManager.UpdateAsync(user);
+                    IdentityResult result = await userAccountPresentationService.Update(user);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("Index");
@@ -132,7 +127,7 @@ namespace TodoCSharp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
+                var result = await userAccountPresentationService.PasswordSignIn(model.UserName, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
                     if (!String.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
@@ -158,7 +153,7 @@ namespace TodoCSharp.Controllers
         public async Task<IActionResult> LogOff()
         {
             // Удаляем аутентификационные куки
-            await signInManager.SignOutAsync();
+            await userAccountPresentationService.SignOut();
             return RedirectToAction("Create", "Home");
         }
 

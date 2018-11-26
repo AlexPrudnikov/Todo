@@ -1,37 +1,55 @@
-let elementButton = document.getElementById('create');
-elementButton.addEventListener('click', addTodo);
+document.getElementById('create').addEventListener('click', addTodo);
 
-function Task(name, accomlished = false, ini = true) {
-    this._id = Date.now();
-    this.name = name;
-    this.accomlished = accomlished;
-    this.main = null;
-    this.in = ini;
+let Task = (function () {
+	let NewTask;
+		
+    NewTask = function (name, accomlished = false, ini = true) {
+            this._id = Math.ceil(Math.random() * 100);
+			this.name = name;
+			this.accomlished = accomlished;
+			this.main = null;
+            this.in = ini;
+			
+			if(this.in) {
+				this.init();
+			}
+		};
 
-    if (this.in) this.init();
-}
+    //NewTask.events = { //???
+    //    button: {},
+    //    input: {}
+    //};
 
-Task.prototype = {
-    init,
-    createElement,
+    NewTask.events = {};
+        
+		NewTask.prototype = {
+			init,
+			createElement,
 
-    handleReplaceTodo,
-    handleCloseReplaceInput,
-    handleRemoveTodo,
-    handleReplaceCheckboxTodo
-};
+			handleReplaceTodo,
+			handleCloseReplaceInput,
+			handleRemoveTodo,
+			handleReplaceCheckboxTodo
+		};
+		
+		NewTask.prototype.getId = function() {
+			return this._id;
+		}
+		
+		return NewTask;
+}());
 
 function init() {
     this.main = document.getElementById('elements');
 
-    let task = this.createElement({ name: this.name, tag: 'label', attributes: { class: 'labelTask' } });
-    let label = this.createElement({ name: 'Выполнена', tag: 'label', attributes: {} });
-    let checkbox = this.createElement({ name: '', tag: 'input', attributes: { type: 'checkbox' }, events:{ preplaceCheckbox: this.handleReplaceCheckboxTodo.bind(this)} });
-    let buttonReplace = this.createElement({ name: 'Изменить задачу', tag: 'button', attributes: { type: 'submit', id: 'replaceAndSave' }, events: { closeReplaceInput: this.handleCloseReplaceInput.bind(this), replaceTodo: this.handleReplaceTodo.bind(this)} });
-    let buttonRemove = this.createElement({ name: 'Удалить задачу', tag: 'button', attributes: { type: 'submit' }, events: { removeTodo: this.handleRemoveTodo.bind(this)} });
+    let task = this.createElement({ name: this.name, tag: 'label', attributes: { class: 'labelTask' } }),
+        label = this.createElement({ name: 'Выполнена', tag: 'label', attributes: {} }),
+        checkbox = this.createElement({ name: '', tag: 'input', attributes: { type: 'checkbox' }, events:{ preplaceCheckbox: this.handleReplaceCheckboxTodo.bind(this, this)} }),
+        buttonReplace = this.createElement({ name: 'Изменить задачу', tag: 'button', attributes: { type: 'submit', id: 'replaceAndSave' }, events: { closeReplaceInput: this.handleCloseReplaceInput.bind(this, this), replaceTodo: this.handleReplaceTodo.bind(this, this)} }),
+        buttonRemove = this.createElement({ name: 'Удалить задачу', tag: 'button', attributes: { type: 'submit' }, events: { removeTodo: this.handleRemoveTodo.bind(this, this)} });
 
     let div = document.createElement('div');
-    div.id = this._id;
+    div.id = this.getId();
 
     let elements = [task, label, checkbox, buttonReplace, buttonRemove];
     elements.forEach((element) => div.appendChild(element));
@@ -39,39 +57,39 @@ function init() {
 }
 
 // Изменения задачи
-function handleReplaceTodo(event) {
+function handleReplaceTodo(task, event) {
     event.preventDefault();
-    let todo = document.getElementById(this._id),
+   
+    let todo = document.getElementById(task.getId()),
         button = todo.getElementsByTagName('button')[0];
 
     if (button.innerHTML === 'Изменить задачу') {
         button.innerHTML = 'Сохранить задачу';
-        replace.call(this, { todo: todo, class: '.labelTask', type: 'input', attributes: { class: 'inputReplace' } });
+        replace.call(task, { todo: todo, class: '.labelTask', type: 'input', attributes: { class: 'inputReplace' } });
     } else if (button.innerHTML === 'Сохранить задачу') {
         button.innerHTML = 'Изменить задачу';
-        replace.call(this, { todo: todo, class: '.inputReplace', type: 'label', attributes: { class: 'labelTask' } });
+        replace.call(task, { todo: todo, class: '.inputReplace', type: 'label', attributes: { class: 'labelTask' } });
 
-        getUrl('Home/Edit', 'POST', this)
+        getUrl('Home/Edit', 'POST', task)
             .then(() => console.log('Задача отредоктирована'))
             .catch(error => console.error(`Error: handleReplaceTodo ${error}`));
     }
 }
 
 // Закрывает предыдущий input
-function handleCloseReplaceInput(event) {
+function handleCloseReplaceInput(task, event) {
     event.preventDefault();
 
     let temp,
         elements = document.getElementById('elements');
-    for (let todos = elements.firstChild; todos !== null; todos = todos.nextSibling) {
-        if (testNodeType(todos)) continue;
-        for (let element = todos.firstChild; element !== null; element = element.nextSibling) {
-            if (testNodeType(element)) continue;
+    for (let todos = elements.firstElementChild; todos !== null; todos = todos.nextElementSibling) {
+
+        for (let element = todos.firstElementChild; element !== null; element = element.nextElementSibling) {
         
             // todos.id !== this_id - Если это не предыдущая задача, а текущая прерываем поиск
-            if (element.localName === 'input' && element.type !== 'checkbox' && todos.id !== this._id) {
+            if (element.localName === 'input' && element.type !== 'checkbox' && todos.getId() !== task.getId()) {
                 temp = element;
-            } else if (element.localName === 'button' && element.innerHTML === 'Сохранить задачу' && todos.id !== this._id) {
+            } else if (element.localName === 'button' && element.innerHTML === 'Сохранить задачу' && todos.getId() !== task.getId()) {
                 element.innerHTML = 'Изменить задачу';
 
                 // Конструируем label
@@ -85,36 +103,42 @@ function handleCloseReplaceInput(event) {
 }
 
 // Выполнена ли задача
-function handleReplaceCheckboxTodo() {
-    let main = document.getElementById(this._id),
+function handleReplaceCheckboxTodo(task, event) {
+    let main = document.getElementById(task.getId()),
         label = main.getElementsByTagName('label')[0],
         checkbox = main.getElementsByTagName('input')[0];
 
+    console.log(this);
+    console.log(task);
+    console.log(task.getId());
     // Выполнена ли задача
-    if (!this.accomlished) {
-        checkbox.checked = 'checked';
+    if (!task.accomlished) {
+        checkbox.checked = true;
         label.style.textDecoration = 'line-through';
-    } else if (this.accomlished) {
+
+    } else if (task.accomlished) {
         checkbox.checked = '';
         label.style.textDecoration = 'none';
     }
 
-    this.accomlished = checkbox.checked;
+    task.accomlished = checkbox.checked;
 
     // Отправляем на сервер выполнена ли задача
-    getUrl('Home/Edit', 'POST', this)
+    getUrl('Home/Edit', 'POST', task)
         .then(() => console.log('Задача отредоктирована'))
         .catch(error => console.error(`Erorr handleReplaceCheckboxTodo: ${error}`));
 
 }
 
 // Удаление задачи
-function handleRemoveTodo() {
-    let todo = document.getElementById(this._id);
-    todo.parentNode.removeChild(todo);
+function handleRemoveTodo(task, event) {
+    event.preventDefault();
 
+    let todo = document.getElementById(task.getId());
+    todo.parentNode.removeChild(todo);
+	
     // Удаление задачи на сервере
-    getUrl('Home/Delete', 'POST', this)
+    getUrl('Home/Delete', 'POST', { _id: task.getId() })
         .then(() => console.log('Задача удалена'))
         .catch(error => console.error(`Error handleRemoveTodo: ${error}`));
 
@@ -126,15 +150,14 @@ function createElement(values) {
     element.innerHTML = values.name;
 
     // Атрибуты
-    for (let attribute in values.attributes) {
-        element.setAttribute(attribute, values.attributes[attribute]);
+    for (let att in values.attributes) {
+        element.setAttribute(att, values.attributes[att]);
     }
 
     // События
     if(values.events) {
-        for(let e in values.events) {
-            element.addEventListener('click', values.events[e]);
-            element.removeEventListener('click', values.events[e]); // ??? нужно ли удалять событие
+        for(let event in values.events) {
+            element.addEventListener('click', values.events[event]);
         }
     }
 
@@ -145,20 +168,21 @@ function createElement(values) {
 function addTodo(event) {
     event.preventDefault();
 
-    let input = document.getElementById('mainInput');
-    let name = input.value;
+    let input = document.getElementById('mainInput'),
+        name = input.value;
     input.value = '';
 
+    let task = new Task(name);
     // Сохраняем данные на сервере
-    create('Home/Create', new Task(name))
+    create('Home/Create', task)
         .then(() => console.log('Задача успешно создана'))
         .catch(error => console.error(`Error: addTodo ${error}`));
 }
 
 // Изменение задачи
 function replace(elements) {
-    let element = elements.todo.querySelector(elements.class);
-    let newElement = document.createElement(elements.type);
+    let element = elements.todo.querySelector(elements.class),
+        newElement = document.createElement(elements.type);
 
     // Добавление атрибутов к елементу
     for (let attribute in elements.attributes) {
@@ -176,6 +200,9 @@ function replace(elements) {
     // Заменяем элемент
     element.replaceWith(newElement);
 }
+
+
+
 
 
 
