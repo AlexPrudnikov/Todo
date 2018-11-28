@@ -15,12 +15,7 @@ let Task = (function () {
 			}
 		};
 
-    //NewTask.events = { //???
-    //    button: {},
-    //    input: {}
-    //};
-
-    NewTask.events = {};
+        NewTask.events = {};
         
 		NewTask.prototype = {
 			init,
@@ -82,14 +77,15 @@ function handleCloseReplaceInput(task, event) {
 
     let temp,
         elements = document.getElementById('elements');
-    for (let todos = elements.firstElementChild; todos !== null; todos = todos.nextElementSibling) {
 
+    for (let todos = elements.firstElementChild; todos !== null; todos = todos.nextElementSibling) {
+        let elementId = todos.getAttribute('id');
         for (let element = todos.firstElementChild; element !== null; element = element.nextElementSibling) {
         
             // todos.id !== this_id - Если это не предыдущая задача, а текущая прерываем поиск
-            if (element.localName === 'input' && element.type !== 'checkbox' && todos.getId() !== task.getId()) {
+            if (element.localName === 'input' && element.type !== 'checkbox' && elementId !== task.getId()) {
                 temp = element;
-            } else if (element.localName === 'button' && element.innerHTML === 'Сохранить задачу' && todos.getId() !== task.getId()) {
+            } else if (element.localName === 'button' && element.innerHTML === 'Сохранить задачу' && elementId !== task.getId()) {
                 element.innerHTML = 'Изменить задачу';
 
                 // Конструируем label

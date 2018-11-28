@@ -17,18 +17,17 @@ function sort(event) {
 }
 
 function addEventListener(task, element, callback) {
-    //let id = element.localName === 'input' ? `${task._id}_checkbox` : `${task._id}_${element.innerHTML}`;
-    let id = element.localName === 'input' ? `${task._id}_checkbox` : `${task._id}_${callback.name}`;
+    let name = callback.name;
+    let value = `${task._id}_${name}`;
 
-    console.log(callback.name);
-    console.log(id);
-
-    Task.events[id] = function (event) { callback(task, event); }
-    element.addEventListener('click', Task.events[id]);
+    element.setAttribute(`data-${name}`, value);
+    Task.events[value] = function (event) { callback(task, event); }
+    element.addEventListener('click', Task.events[value]);
 }
 
 function removeEventListener() {
     let elements = document.getElementById('elements');
+
     remove(elements, 'input');
     remove(elements, 'button');   
 }
@@ -37,12 +36,12 @@ function remove(elements, tag) {
     let temp = elements.getElementsByTagName(tag);
 
     [].forEach.call(temp, item => {
-        let id = item.parentNode.getAttribute('id');
-        //id = tag === 'input' ? `${id}_checkbox` : `${id}_${item.innerHTML}`;
-        id = tag === 'input' ? `${id}_checkbox` : `${id}_${callback.name}`;
+        for (let value in item.dataset) {
+            let event = item.dataset[value];
 
-        item.removeEventListener('click', Task.events[id]);
-        delete Task.events[id];
+            item.removeEventListener('click', Task.events[event]);
+            delete Task.events[event];
+        }
     });
 }
 

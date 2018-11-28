@@ -10,3 +10,4 @@ E:\Projects Visual Studio 2013\TodoCSharp\TodoCSharp\bin\Debug\netcoreapp2.0\Tod
 E:\Projects Visual Studio 2013\TodoCSharp\TodoCSharp\bin\Debug\netcoreapp2.0\TodoCSharp.pdb
 E:\Projects Visual Studio 2013\TodoCSharp\TodoCSharp\obj\Debug\netcoreapp2.0\TodoCSharp.dll
 E:\Projects Visual Studio 2013\TodoCSharp\TodoCSharp\obj\Debug\netcoreapp2.0\TodoCSharp.pdb
+E:\Projects Visual Studio 2013\TodoCSharp\TodoCSharp\obj\Debug\netcoreapp2.0\TodoCSharp.csprojAssemblyReference.cache

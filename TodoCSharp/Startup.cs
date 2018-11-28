@@ -74,7 +74,7 @@ namespace TodoCSharp
             {
                 routes.MapRoute(
                         name: "default",
-                        template: "{controller=Home}/{action=Create}/{id?}"
+                        template: "{controller=Home}/{action=Index}/{id?}"
                     );
             });     
         }
