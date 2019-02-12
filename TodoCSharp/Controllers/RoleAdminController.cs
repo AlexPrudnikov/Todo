@@ -65,7 +65,7 @@ namespace TodoCSharp.Controllers
                 ModelState.AddModelError("", "No role found");
             }
 
-            return RedirectToAction("Index"); //View("Index"); // Проверить в учебнике было так return View("Index", roleManager.Roles);
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -115,85 +115,5 @@ namespace TodoCSharp.Controllers
                 ModelState.AddModelError("", error.Description);
             }
         }
-
-        // Эти методы вынести в контроллер UserRoleAdminController! т.к. они предназначены для
-        // изменен ролей в которых состоит пользователь, а не изменения самой роли, создание, удаление.
-
-        //    [HttpGet]
-        //    public async Task<IActionResult> Edit(String id)
-        //    {
-        //        IdentityRole role = await roleManager.FindByIdAsync(id);
-        //        List<ApplicationUser> members = new List<ApplicationUser>();
-        //        List<ApplicationUser> nonMembers = new List<ApplicationUser>();
-
-        //        foreach (var user in userManager.Users)
-        //        {
-        //            var list = await userManager.IsInRoleAsync(user, role.Name)
-        //                ? members
-        //                : nonMembers;
-
-        //            list.Add(user);
-        //        }
-
-        //        return View(new RoleEditModel()
-        //        {
-        //            Role = role,
-        //            Members = members,
-        //            NonMembers = nonMembers
-        //        });
-        //    }
-
-        //    [HttpPost]
-        //    public async Task<IActionResult> Edit(RoleModificationModel model)
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            await AddToRoleAsync(model);
-        //            await RemoveFromRoleAsync(model);
-        //        }
-
-        //        if (ModelState.IsValid)
-        //        {
-        //            return RedirectToAction(nameof(Index));
-        //        }
-        //        else
-        //        {
-        //            return await Edit(model.RoleId);
-        //        }
-        //    }
-
-        //    private async Task AddToRoleAsync(RoleModificationModel model)
-        //    {
-        //        IdentityResult result;
-        //        foreach (var userId in model.IdsToAdd ?? new String[] { })
-        //        {
-        //            ApplicationUser user = await userManager.FindByIdAsync(userId);
-        //            if (user != null)
-        //            {
-        //                result = await userManager.AddToRoleAsync(user, model.RoleName);
-        //                if (!result.Succeeded)
-        //                {
-        //                    AddErrorsFromResult(result);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    private async Task RemoveFromRoleAsync(RoleModificationModel model)
-        //    {
-        //        IdentityResult result;
-        //        foreach (var userId in model.IdsToDelete ?? new String[] { })
-        //        {
-        //            ApplicationUser user = await userManager.FindByIdAsync(userId);
-        //            if(user != null)
-        //            {
-        //                result = await userManager.RemoveFromRoleAsync(user, model.RoleName);
-        //                if (!result.Succeeded)
-        //                {
-        //                    AddErrorsFromResult(result);
-        //                }
-        //            }
-        //        }
-        //    }
     }
 }

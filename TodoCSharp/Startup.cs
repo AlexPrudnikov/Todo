@@ -35,6 +35,7 @@ namespace TodoCSharp
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Добавление сервисов фреймворка MVC
             services.AddMvc();
 
             // Получаем строку подключения из файла конфигурации

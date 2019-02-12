@@ -25,9 +25,34 @@ namespace TodoCSharp.Controllers
             this.userAccountPresentationService = userAccountPresentationService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View(rolePresentationService.Roles);
+            UserRolesModel model = null;
+            List<UserRolesModel> userRoles = new List<UserRolesModel>();
+
+            foreach (ApplicationUser user in userAccountPresentationService.Users)
+            {
+                model = new UserRolesModel
+                {
+                    User = new List<ApplicationUser>(),
+                    Roles = new List<IdentityRole>()
+                };
+
+                model.User.Add(user);
+
+                foreach (IdentityRole role in rolePresentationService.Roles)
+                {
+                    if (await userAccountPresentationService.IsInRole(user, role.Name))
+                    {
+                        model.Roles.Add(role);
+                    }
+                }
+
+                userRoles.Add(model);
+            }
+
+            return View(userRoles);
         }
 
         [HttpGet]
@@ -37,7 +62,7 @@ namespace TodoCSharp.Controllers
             List<ApplicationUser> members = new List<ApplicationUser>();
             List<ApplicationUser> nonMembers = new List<ApplicationUser>();
 
-            foreach (var user in userAccountPresentationService.Users) 
+            foreach (var user in userAccountPresentationService.Users)
             {
                 var list = await userAccountPresentationService.IsInRole(user, role.Name)
                     ? members
@@ -59,8 +84,14 @@ namespace TodoCSharp.Controllers
         {
             if (ModelState.IsValid)
             {
-                await userRolePresentationService.AddToRole(model, AddErrorsFromResult);
-                await userRolePresentationService.RemoveFromRole(model, AddErrorsFromResult);
+                //await userRolePresentationService.AddToRole(model, AddErrorsFromResult);
+                //await userRolePresentationService.RemoveFromRole(model, AddErrorsFromResult);
+
+                //------------------------------------------------------------------------------------------
+                // TODO Попробывать так!
+                Task addRole = userRolePresentationService.AddToRole(model, AddErrorsFromResult);
+                Task removeRole = userRolePresentationService.RemoveFromRole(model, AddErrorsFromResult);
+                await Task.WhenAll(addRole, removeRole);
             }
 
             if (ModelState.IsValid)

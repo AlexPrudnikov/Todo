@@ -92,7 +92,7 @@ function createTodos(data) {
                 addEventListener(task, item, task.handleReplaceCheckboxTodo);
 
             } else if (item.localName === 'button' && item.innerHTML === 'Изменить задачу') {
-                addEventListener(task, item, task.handleCloseReplaceInput); // как удалить событие???
+                addEventListener(task, item, task.handleCloseReplaceInput);
                 addEventListener(task, item, task.handleReplaceTodo);
 
             } else if (item.localName === 'button' && item.innerHTML === 'Удалить задачу') {

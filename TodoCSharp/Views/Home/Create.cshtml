@@ -1,37 +1,46 @@
 ﻿@model IEnumerable<TodoCSharp.ViewModels.TodoViewModel>
 @{
-    Layout = null;
     ViewData["Title"] = "Create";
 }
-<div id="main">
-    <a class="labelTask" asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.NameSort">Имя</a>
-    <a asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.AccomlishedSort">Выполнена</a>
-    <div>
-        <p>@User.Identity.Name</p>
-    </div>
-    <div id="elements">
-        @foreach (var t in Model)
-        {
-            <div id="@t.Id">
-                <label class="labelTask">@t.Name</label>
-                <label>Выполнена</label>
-                <input type="checkbox" @(t.Accomlished == true ? "checked=\"checked\"" : "")/>
-                <button type="submit">Изменить задачу</button>
-                <button type="submit">Удалить задачу</button>
-            </div>
-        }
-    </div>
-    <br />
+<h2>@User.Identity.Name</h2>
 
+<div id="main">
+    <div id="elements">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th><a class="labelTask" asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.NameSort">Name</a></th>
+                    <th><a asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.AccomlishedSort">Done</a></th>
+                    <th colspan="2">Navigation</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var todo in Model)
+                {
+                    <tr id="@todo.Id">
+                        <td><label>@todo.Name</label></td>
+                        <td><input class="form-control" type="checkbox" @(todo.Accomlished == true ? "checked=\"checked\"" : String.Empty) /></td>
+                        <td><button type="submit" class="btn btn-outline-primary btn-block">Replace</button></td>
+                        <td><button type="submit" class="btn btn-outline-danger btn-block">Delete</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <form asp-controller="Home" asp-action="Create" asp-antiforgery="true" method="post">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th><input id="mainInput" class="form-control" type="text" /></th>
+                    <th><button id="create" type="submit" class="btn btn-outline-primary btn-block">Create</button></th>
+                </tr>
+            </thead>
+        </table>
+    </form>
 </div>
-<form method="post" asp-controller="Home" asp-action="Create" asp-antiforgery="true">
-    <input id="mainInput" class="inputReplace" type="text" />
-    <button id="create" type="submit">Создать задачу</button>
-</form>
 
 <link rel="stylesheet" asp-href-include="~/css/style.css" />
 <script asp-src-include="~/js/xmlHttpRequest.js"></script>
 <script asp-src-include="~/js/todo.js"></script>
 <script asp-src-include="~/js/sortTodos.js"></script>
 <script asp-src-include="~/js/addEvent.js"></script>
-
