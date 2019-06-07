@@ -52,7 +52,12 @@ namespace TodoCSharp.TodoDao
 
         public async Task RemoveAsync(Int32? id)
         {
-            
+            Todo todo = await context.Todos
+                .Where(t => t.TodoId == id)
+                .Include(x => x.Likes)
+                .FirstOrDefaultAsync();
+
+            context.Todos.Remove(todo);
 
             await context.SaveChangesAsync();
         }
