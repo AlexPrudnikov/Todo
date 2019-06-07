@@ -79,7 +79,6 @@ function handleCheckboxTodo(event) {
         .then(() => console.log('Edit Todo'))
         .catch(error => console.error(error));
 
-    // TODO: Вынести в отдельную функцию 1.
     let p = currentTarget.querySelector('#name');
     styleTextDecorationAndColor(p, target);
 }
