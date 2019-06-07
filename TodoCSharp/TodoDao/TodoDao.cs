@@ -15,28 +15,48 @@ namespace TodoCSharp.TodoDao
             this.context = context;
         }
 
-        public async Task<IEnumerable<Todo>> GetTodosAsync(String id)
+        public async Task<IEnumerable<Todo>> GetUserTodosAsync(String id)
         {
             IEnumerable<Todo> todos = null;
 
             todos = await context.Todos
                 .Where(todo => todo.ApplicationUserId == id)
+                .Include(x => x.Likes)
                 .ToListAsync();
 
             return todos;
         }
 
-        public async Task CreateAsync(String id, Todo todo)
+        public async Task<Todo> GetTodoAsync(Int32 id)
+        {
+            Todo todo = await context.Todos
+                .Where(x => x.TodoId == id)
+                .Include(x => x.Likes)
+                .FirstOrDefaultAsync();
+
+            return todo;
+        }
+
+        public async Task<IEnumerable<Todo>> GetAllTodosAsync() =>
+            await context.Todos.ToListAsync();
+
+        public async Task<Int32> CreateAsync(String id, Todo todo)
         {
             ApplicationUser user = await context.Users.FindAsync(id);
             user?.Todos.Add(todo);
 
             await context.SaveChangesAsync();
+
+            return todo.TodoId;                    
         }
 
         public async Task RemoveAsync(Int32? id)
         {
-            Todo todo = await context.Todos.FindAsync(id);
+            Todo todo = await context.Todos
+                .Where(t => t.TodoId == id)
+                .Include(x => x.Likes)
+                .FirstOrDefaultAsync();
+
             context.Todos.Remove(todo);
 
             await context.SaveChangesAsync();
@@ -54,12 +74,16 @@ namespace TodoCSharp.TodoDao
         public async Task EditAsync(Todo todo)
         {
             context.Entry(todo)
-                    .Property(e => e.Name)
-                    .IsModified = true;
+                   .Property(e => e.Name)
+                   .IsModified = true;
 
             context.Entry(todo)
-                .Property(e => e.Accomlished)
-                .IsModified = true;
+                   .Property(e => e.Done)
+                   .IsModified = true;
+
+            context.Entry(todo)
+                   .Collection(e => e.Likes)
+                   .IsModified = true;
 
             await context.SaveChangesAsync();
         }

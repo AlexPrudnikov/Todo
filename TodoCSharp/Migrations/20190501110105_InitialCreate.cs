@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace TodoCSharp.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,7 +44,8 @@ namespace TodoCSharp.Migrations
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true)
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    ss = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -187,11 +188,12 @@ namespace TodoCSharp.Migrations
                 name: "Todos",
                 columns: table => new
                 {
-                    TodoId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Accomlished = table.Column<bool>(nullable: false),
+                    TodoId = table.Column<int>(nullable: false),
                     ApplicationUserId = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    Done = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Public = table.Column<bool>(nullable: false),
+                    Time = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -201,6 +203,26 @@ namespace TodoCSharp.Migrations
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Like",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    TodoId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Like", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Like_Todos_TodoId",
+                        column: x => x.TodoId,
+                        principalTable: "Todos",
+                        principalColumn: "TodoId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -244,6 +266,11 @@ namespace TodoCSharp.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Like_TodoId",
+                table: "Like",
+                column: "TodoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Todos_ApplicationUserId",
                 table: "Todos",
                 column: "ApplicationUserId");
@@ -270,13 +297,16 @@ namespace TodoCSharp.Migrations
                 name: "Errors");
 
             migrationBuilder.DropTable(
-                name: "Todos");
+                name: "Like");
 
             migrationBuilder.DropTable(
                 name: "TodoStyles");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Todos");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

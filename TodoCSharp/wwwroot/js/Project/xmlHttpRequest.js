@@ -1,4 +1,4 @@
-﻿function create(url, data) {
+﻿export function create(url, data) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
 
@@ -8,8 +8,11 @@
             if (xhr.status === 200 && xhr.readyState === 4) {
                 if(xhr.response) {
                     let data = JSON.parse(xhr.response);
+                    console.log(data);
                     resolve(data);    
                 }
+
+                resolve();
             }
             else {
                 reject(xhr.statusText);
@@ -35,7 +38,7 @@ function encodeFormData(data) {
     return pairs.join('&');
 }
 
-function getUrl(url, method, id) {
+export function getUrl(url, method, id) {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.open(method, url);
@@ -58,7 +61,6 @@ function getUrl(url, method, id) {
             }
         };
 
-        //xhr.onerror = error;
         xhr.send( encodeFormData(id) );
     });
 }

@@ -172,6 +172,8 @@ namespace TodoCSharp.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
+                    b.Property<string>("ss");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -185,16 +187,35 @@ namespace TodoCSharp.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TodoCSharp.Models.Todo", b =>
+            modelBuilder.Entity("TodoCSharp.Models.Like", b =>
                 {
-                    b.Property<int>("TodoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("Accomlished");
 
                     b.Property<string>("ApplicationUserId");
 
+                    b.Property<int?>("TodoId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TodoId");
+
+                    b.ToTable("Like");
+                });
+
+            modelBuilder.Entity("TodoCSharp.Models.Todo", b =>
+                {
+                    b.Property<int>("TodoId");
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<bool>("Done");
+
                     b.Property<string>("Name");
+
+                    b.Property<bool>("Public");
+
+                    b.Property<DateTime>("Time");
 
                     b.HasKey("TodoId");
 
@@ -270,6 +291,13 @@ namespace TodoCSharp.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TodoCSharp.Models.Like", b =>
+                {
+                    b.HasOne("TodoCSharp.Models.Todo")
+                        .WithMany("Likes")
+                        .HasForeignKey("TodoId");
                 });
 
             modelBuilder.Entity("TodoCSharp.Models.Todo", b =>

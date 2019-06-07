@@ -20,7 +20,7 @@ namespace TodoCSharp.ViewModels
         [Display(Name = "Password")]
         public String Password { get; set; }
 
-        [Display(Name = "Запомнить?")]
+        [Display(Name = "Remember me?")]
         public Boolean RememberMe { get; set; }
 
         public String ReturnUrl { get; set; }

@@ -6,6 +6,7 @@ using TodoCSharp.Models;
 using TodoCSharp.TodoErrorPresentationService;
 using TodoCSharp.TodoPresentationService;
 using TodoCSharp.Infrastructure;
+using System.Diagnostics;
 
 namespace TodoCSharp.Controllers
 {
@@ -20,6 +21,12 @@ namespace TodoCSharp.Controllers
             this.todoErrorService = todoErrorService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetPublicTodoList()
+        {
+            var todos = await todoService.GetPublicTodos();
+            return View("~/Views/Home/GetPublicTodoList.cshtml", todos);
+        }
 
         /// <summary>
         /// Создать задачу:
@@ -33,19 +40,19 @@ namespace TodoCSharp.Controllers
                 ? SortState.NameDesc
                 : SortState.NameAsc;
 
-            ViewData["AccomlishedSort"] = (sortOrder == SortState.AccomlishedAsc)
-                ? SortState.AccomlishedDesc
-                : SortState.AccomlishedAsc;
+            ViewData["DoneSort"] = (sortOrder == SortState.DoneAsc)
+                ? SortState.DoneDesc
+                : SortState.DoneAsc;
 
             String currentUser = User.GetUserId();
-            return View(await todoService.GetTodos(currentUser, sortOrder));
+            return View("~/Views/Home/Create.cshtml", await todoService.GetUserTodos(currentUser, sortOrder));
         }
 
         [HttpPost]
-        public async Task Create(Todo todo)
+        public async Task<Int32> Create(Todo todo)
         {
             String currentUser = User.GetUserId();
-            await todoService.Create(currentUser, todo);
+            return await todoService.Create(currentUser, todo);
         }
 
         /// <summary>
@@ -60,20 +67,29 @@ namespace TodoCSharp.Controllers
 
             temp = new ModelFoJs
             {
+                // Сортировка по 'имени задачи'
                 NameSort = (sortOrder == SortState.NameAsc)
                 ? nameof(SortState.NameDesc)
                 : nameof(SortState.NameAsc),
 
-                AccomlishedSort = (sortOrder == SortState.AccomlishedAsc)
-                ? nameof(SortState.AccomlishedDesc)
-                : nameof(SortState.AccomlishedAsc),
+                // Сортировака по 'выолнена ли задача'
+                AccomlishedSort = (sortOrder == SortState.DoneAsc)
+                ? nameof(SortState.DoneDesc)
+                : nameof(SortState.DoneAsc),
 
-                Todos = await todoService.GetTodos(currentUser, sortOrder)
+                Todos = await todoService.GetUserTodos(currentUser, sortOrder)
             };
 
             return Json(temp);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> LikeTodo([FromHeader(Name = "id")]Int32 id)
+        {
+            String currentUser = User.GetUserId();
+            Int32 count = await todoService.GetTodo(currentUser, id);
+            return Json(count);
+        }
 
         /// <summary>
         /// Удалить задачу:
@@ -81,10 +97,14 @@ namespace TodoCSharp.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task Delete([FromHeader(Name = "_id")]Int32 id)
+        public async Task<JsonResult> Delete([FromHeader(Name = "id")]Int32 id)
         {
+            Debug.WriteLine($"Id {id}");
             await todoService.Remove(id);
+            Debug.WriteLine("return"); 
+            return Json(1);
         }
+            
 
         /// <summary>
         /// Редактировать задачу: 
@@ -103,9 +123,7 @@ namespace TodoCSharp.Controllers
         /// </summary>
         /// <param name="error"></param>
         /// <returns></returns>
-        public async Task Error(TodoError error)
-        {
+        public async Task Error(TodoError error) =>
             await todoErrorService.Create(error);
-        }
     }
 }

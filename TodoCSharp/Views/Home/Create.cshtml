@@ -1,46 +1,88 @@
-﻿@model IEnumerable<TodoCSharp.ViewModels.TodoViewModel>
+﻿@model IEnumerable<TodoViewModel>
 @{
     ViewData["Title"] = "Create";
 }
 <h2>@User.Identity.Name</h2>
 
-<div id="main">
-    <div id="elements">
-        <table class="table table-striped table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th><a class="labelTask" asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.NameSort">Name</a></th>
-                    <th><a asp-controller="Home" asp-action="ReturnTodo" asp-route-sortOrder="@ViewBag.AccomlishedSort">Done</a></th>
-                    <th colspan="2">Navigation</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var todo in Model)
-                {
-                    <tr id="@todo.Id">
-                        <td><label>@todo.Name</label></td>
-                        <td><input class="form-control" type="checkbox" @(todo.Accomlished == true ? "checked=\"checked\"" : String.Empty) /></td>
-                        <td><button type="submit" class="btn btn-outline-primary btn-block">Replace</button></td>
-                        <td><button type="submit" class="btn btn-outline-danger btn-block">Delete</button></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+<div id="temp" class="descr-hidden">
+    <div id="containerId" class="col-12">
+        <div class="card border-info mb-2">
+            <div class="card-header">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input id="done" type="checkbox" class="form-check-input" data-handle="handleCheckboxTodo" @(true == true ? "checked=\"checked\"" : String.Empty) />Done
+                    </label>
+                    <button class="btn btn-sm btn-dark" data-handle="handleRemoveTodo">X</button>
+                    <button class="btn btn-sm btn-info" data-handle="handleReplaceTodo">Replace</button>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons" style="float:right;">
+                        <label class="btn btn-sm btn-secondary active">
+                            <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                            <span id="like" class="badge badge-light">like</span>
+                        </label>
+                        <label class="btn btn-sm btn-secondary">
+                            <input type="radio" name="options" id="option2" autocomplete="off" data-handle="handleLikeTodo"> Like
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-info">
+                <h5 id="time" class="card-title"></h5>
+                <p id="name" class="card-text"></p>
+            </div>
+        </div>
     </div>
+</div>
+
+<div id="elements" class="row">
+    @foreach (var task in Model)
+    {
+        <div id="@task.Id" class="col-12">
+            <div class="card border-info mb-2">
+                <div class="card-header">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input id="done" type="checkbox" class="form-check-input" @(task.Done ? "checked=\"checked\"" : String.Empty) data-handle="handleCheckboxTodo" />Done
+                        </label>
+                        <button id="@task.Id" class="btn btn-sm btn-dark" data-handle="handleRemoveTodo">X</button>
+                        <button id="@task.Id" class="btn btn-sm btn-info" data-handle="handleReplaceTodo">Replace</button>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons" style="float:right;">
+                            <label class="btn btn-sm btn-secondary active">
+                                <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                                <span id="like" class="badge badge-light">@task.Likes.Count()</span>
+                            </label>
+                            <label class="btn btn-sm btn-secondary">
+                                <input type="radio" name="options" id="option2" autocomplete="off" data-handle="handleLikeTodo"> Like
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-info">
+                    <h6 id="time" class="card-title">@task.Time</h6>
+                    <p id="name" class="card-text; @(task.Done ? "text-decoration" : String.Empty)">@task.Name</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div id="form">
     <form asp-controller="Home" asp-action="Create" asp-antiforgery="true" method="post">
-        <table class="table table-striped table-bordered table-hover">
+        <table class="table table-striped table-bordered table-hover table-info">
             <thead>
                 <tr>
-                    <th><input id="mainInput" class="form-control" type="text" /></th>
-                    <th><button id="create" type="submit" class="btn btn-outline-primary btn-block">Create</button></th>
+                    <th><textarea id="mainInput" class="form-control" type="text" style="height:70px;"></textarea></th>
+                    <th><button id="create" type="submit" class="btn btn-outline-info btn-block" data-handle="handleAddTodo">Create</button></th>
                 </tr>
             </thead>
         </table>
     </form>
 </div>
 
-<link rel="stylesheet" asp-href-include="~/css/style.css" />
-<script asp-src-include="~/js/xmlHttpRequest.js"></script>
-<script asp-src-include="~/js/todo.js"></script>
-<script asp-src-include="~/js/sortTodos.js"></script>
-<script asp-src-include="~/js/addEvent.js"></script>
+<link asp-href-include="~/css/style.css" rel="stylesheet" />
+<script asp-src-include="~/js/CRUDFunctions/CRUD.js" type="module"></script>
+<script asp-src-include="~/js/Project/iterator.js" type="module"></script>
+<script asp-src-include="~/js/Project/model.js" type="module"></script>
+<script asp-src-include="~/js/Project/view.js" type="module"></script>
+<script asp-src-include="~/js/xmlHttpRequest.js" type="module"></script>
+<script asp-src-include="~/js/Project/controller.js" type="module"></script>
+<script asp-src-include="~/js/Project/index.js" type="module"></script>

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<TodoViewModel>
+@{
+    ViewData["Title"] = "Test";
+    String userId = User.GetUserId();
+}
+
+<h2>Test</h2>
+
+<div class="row">
+    @foreach (var task in Model)
+    {
+        <div id="@task.Id" class="col-12">
+            <div class="card border-info mb-2">
+                <div class="card-header">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" @(task.ApplicationUserId != userId ? "disabled=\"disabled\"" : String.Empty) @(task.Done == true ? "checked=\"checked\"" : String.Empty) />Done
+                        </label>
+                        <button class="btn btn-sm btn-dark" @(task.ApplicationUserId != userId ? "disabled=\"disabled\"" : String.Empty) style="margin-left:6px; float:right;">X</button>
+                        <button class="btn btn-sm btn-info" @(task.ApplicationUserId != userId ? "disabled=\"disabled\"" : String.Empty) style="float:right;">Replace</button>
+                    </div>
+                </div>
+                <div class="card-body text-info">
+                    <h5 class="card-title">@task.Time</h5>
+                    <p class="card-text">@task.Name</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

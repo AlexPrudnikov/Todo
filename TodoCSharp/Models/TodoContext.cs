@@ -11,7 +11,7 @@ namespace TodoCSharp.Models
     {
         public DbSet<Todo> Todos { get; set; }
         public DbSet<TodoError> Errors { get; set; }
-        public DbSet<TodoStyle> TodoStyles { get; set; } // Проверить будем мы ли это свойство использовать???
-        public TodoContext(DbContextOptions<TodoContext> options) : base(options) { }
+        public DbSet<TodoStyle> TodoStyles { get; set; }
+        public TodoContext(DbContextOptions<TodoContext> options) : base(options) { Database.EnsureCreated(); }
     }
 }

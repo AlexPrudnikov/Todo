@@ -8,8 +8,10 @@ namespace TodoCSharp.TodoPresentationService
 {
     public interface ITodoPresentationService
     {
-        Task<IEnumerable<TodoViewModel>> GetTodos(String id, SortState sortState = SortState.NameAsc);
-        Task Create(String id, Todo todo);
+        Task<IEnumerable<TodoViewModel>> GetUserTodos(String id, SortState sortState = SortState.NameAsc);
+        Task<IEnumerable<TodoViewModel>> GetPublicTodos();
+        Task<Int32> GetTodo(String userId, Int32 todoId);
+        Task<Int32> Create(String id, Todo todo);
         Task Remove(Int32? id);
         Task RemoveAll(String id);
         Task Edit(Todo todo);

@@ -65,3 +65,21 @@ body {
     margin: 0 auto;
     width: 700px;
 }*/
+
+button {
+    margin-left:6px;
+    float:right;
+}
+
+.descr-hidden {
+    display:none;
+}
+
+.descr-visible {
+    visibility:visible;
+}
+
+.text-decoration {
+    text-decoration: line-through;
+    color: darkgrey;
+}

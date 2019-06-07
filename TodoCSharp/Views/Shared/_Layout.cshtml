@@ -4,11 +4,17 @@
     <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/lib/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <script src="~/lib/bootstrap/js/bootstrap-checkbox/js/bootstrap-checkbox.min.js" defer></script>
     <link href="~/css/style.css" rel="stylesheet">
 </head>
-<body class="text-center">
-    <div class="container body-content">
+<body class="row" style="background-color:dimgray">
+    <div class="container" style="background-color:cadetblue"); padding:50px;">
+        <div class="row">
+            <div class="col-12">
+                <h1 style="font-size:50px; text-align:center">My To Do List</h1>
+            </div>
+        </div>
         @RenderBody()
-     </div>
+    </div>
 </body>
 </html>

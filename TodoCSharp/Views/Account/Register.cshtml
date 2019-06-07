@@ -1,52 +1,78 @@
-﻿@model TodoCSharp.ViewModels.RegisterViewModel
+﻿@model RegisterViewModel
 
-<h2>Register</h2>
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-between">
+    <div class="col-5">
+        <h2>Register</h2>
+    </div>
+</div>
+
 <form method="post" asp-controller="Account" asp-action="Register">
     <div asp-validation-summary="ModelOnly"></div>
 
-    <div class="form-group">
-        @*<label class="labelTask" asp-for="UserName" ></label> <br />
-            <input class="inputReplace" asp-for="UserName" />*@
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" type="text" class="form-control" />
-        <span asp-validation-for="UserName"></span>
+    <div class="row justify-content-between">
+        <div class="col-5">
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input class="form-control" asp-for="UserName" type="text" />
+                <span asp-validation-for="UserName"></span>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label class="labelTask" asp-for="Age"></label> <br />
-        <input class="inputReplace" asp-for="Age" />
-        <span asp-validation-for="Age"></span>
+    <div class="row justify-content-between">
+        <div class="col-5">
+            <div class=" form-group">
+                <label asp-for="Age"></label> <br />
+                <input class="form-control" asp-for="Age" />
+                <span asp-validation-for="Age"></span>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label class="labelTask" asp-for="Email"></label><br />
-        <input class="inputReplace" asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+    <div class="row justify-content-between">
+        <div class="col-5">
+            <div class="form-group">
+                <label asp-for="Email"></label><br />
+                <input class="form-control" asp-for="Email" />
+                <span asp-validation-for="Email"></span>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label class="labelTask" asp-for="Password"></label> <br />
-        <input class="inputReplace" asp-for="Password" />
-        <span asp-validation-for="Password"></span>
+    <div class="row justify-content-between">
+        <div class="col-5">
+            <div class="form-group">
+                <label asp-for="Password"></label> <br />
+                <input class="form-control" asp-for="Password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label class="labelTask" asp-for="PasswordConfirm"></label> <br />
-        <input class="inputReplace" asp-for="PasswordConfirm" />
-        <span asp-validation-for="PasswordConfirm"></span>
+    <div class="row justify-content-between">
+        <div class="col-5">
+            <div class="form-group">
+                <label asp-for="PasswordConfirm"></label> <br />
+                <input class="form-control" asp-for="PasswordConfirm" />
+                <span asp-validation-for="PasswordConfirm"></span>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label class="labelTask" asp-for="Captcha"></label> <br />
-        <input class="inputReplace" asp-for="Captcha" />
-        <span asp-validation-for="Captcha"></span>
+    <div class="row justify-content-between">
+        <div class="col-5">
+            <div class="form-group">
+                <label asp-for="Captcha"></label> <br />
+                <input class="form-control" asp-for="Captcha" />
+                <span asp-validation-for="Captcha"></span>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <button type="submit" class="btn btn-primary">Регистрация</button>
+    <div class="row jumbotron-fluid">
+        <div class="col-5">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Register</button>
+                <a class="btn btn-light" asp-controller="Account" asp-action="Login">Login</a>
+            </div>
+        </div>
     </div>
 </form>
-
-@*Добавить bootstrap
-https://www.w3schools.com/bootstrap4/tryit.asp?filename=trybs_form_input&stacked=h*@
-

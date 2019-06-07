@@ -9,7 +9,7 @@ namespace TodoCSharp.Models
     {
         NameAsc,
         NameDesc,
-        AccomlishedAsc,
-        AccomlishedDesc
+        DoneAsc,
+        DoneDesc
     }
 }
